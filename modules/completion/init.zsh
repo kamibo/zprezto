@@ -32,13 +32,12 @@ unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
 # cache time of 20 hours, so it should almost always regenerate the first time a
 # shell is opened each day.
 autoload -Uz compinit
-_comp_files=(${ZDOTDIR:-$HOME}/.zcompdump(Nm-20))
-if (( $#_comp_files )); then
+compfiles=(${ZDOTDIR:-$HOME}/.zcompdump(Nm-20))
+if [[ $#compfiles > 0 ]]; then
   compinit -i -C
 else
   compinit -i
 fi
-unset _comp_files
 
 #
 # Styles
@@ -102,13 +101,9 @@ zstyle ':completion:*:history-words' menu yes
 # Environmental Variables
 zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
 
-# Populate hostname completion. But allow ignoring custom entries from static
-# */etc/hosts* which might be uninteresting.
-zstyle -a ':prezto:module:completion:*:hosts' etc-host-ignores '_etc_host_ignores'
-
+# Populate hostname completion.
 zstyle -e ':completion:*:hosts' hosts 'reply=(
   ${=${=${=${${(f)"$(cat {/etc/ssh/ssh_,~/.ssh/}known_hosts(|2)(N) 2> /dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
-  ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2> /dev/null))"}%%(\#${_etc_host_ignores:+|${(j:|:)~_etc_host_ignores}})*}
   ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2> /dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
 )'
 
