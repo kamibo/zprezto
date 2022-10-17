@@ -17,10 +17,12 @@ autoload -Uz promptinit
 promptinit
 prompt pure
 
-alias ninja='ninja-build'
 alias v='vim'
 alias n='ninja'
+alias fd='fdfind'
 
 if [ -f "$HOME/.localrc" ]; then
   source "$HOME/.localrc" ]
 fi
+
+source /opt/ros/humble/setup.zsh
